@@ -112,9 +112,13 @@ def flashweave_etl(sixteens_path, eighteens_path, metadata_path, sixteens_outpat
     # Flip 16S and 18S and add potu prefix to 16S and eotu prefix to 18S (for "prokaryote" and "eukaryote" respectively)
     potus = pd.Series(sixteenS_filtered.index).apply(lambda x: 'potu_' + str(x)).values
     eotus = pd.Series(eighteenS_filtered.index).apply(lambda x: 'eotu_' + str(x)).values
-    id_map = pd.DataFrame({'Feature.ID': sixteenS_filtered['Feature.ID'].values, 'otu_id': potus})
+    prokaryote_taxonomy =  sixteenS['silva_Taxon']
+    eukaryote_taxonomy = eighteenS['pr2_Taxon']
+    prokaryote_taxonomy = prokaryote_taxonomy.loc[sixteenS_filtered.index].copy()
+    eukaryote_taxonomy = eukaryote_taxonomy.loc[eighteenS_filtered.index].copy()
+    id_map = pd.DataFrame({'Feature.ID': sixteenS_filtered['Feature.ID'].values, 'otu_id': potus, 'Taxonomy': prokaryote_taxonomy})
     id_map = pd.concat([id_map, pd.DataFrame({'Feature.ID': eighteenS_filtered['Feature.ID'].values,
-                                              'otu_id': eotus})])
+                                              'otu_id': eotus, 'Taxonomy': eukaryote_taxonomy})])
     id_map.to_csv(id_map_outpath, sep='\t', index=False)
     sixteenS_filtered = sixteenS_filtered.drop('Feature.ID', axis=1).T
     eighteenS_filtered = eighteenS_filtered.drop('Feature.ID', axis=1).T

@@ -32,10 +32,26 @@ The data can be found on the TSCC, located at `/tscc/projects/ps-allenlab/projda
 - run_flashweave_v9.jl: run with `julia run_flashweave_v9.jl`
 - This will create the network, and save it into data/graph
 
-## 02_Edgelist_and_Circlize.ipynb
+## 02_Basic_Graph_Analysis.ipynb
+
+- This notebook explores some of the basic attributes of the co-occurrence network, such as number of nodes and edges, node degrees, clustering coefficient, modularity, etc.
+
+## 03_Edgelist_and_Circlize.ipynb
 
 - This notebook contains code to read the flashweave network and the input data containing taxonomy information, then generates an edgelist between groups of interest (for the most part, phyla, except in the case of Dinoflagellata and Bacillariophyta)
 
-## 03_Local_Network_Correlation.ipynb
+## generate_circos_plots.sh
+
+- This script will iterate through all of the folders created by the **03_Edgelist_and_Circlize.ipynb** notebook and generate circos plots for each group that has a folder and associated circlize edgelist
+
+## 04_Local_Network_Correlation.ipynb
 
 - This notebook contains code to replicate the process to generate Fig 1.B in the Chafron paper to associate environmental parameters to local community structures.
+
+## 05_Metavariable_Tolerance_Ranges.ipynb
+
+- This notebook contains code to calculate the tolerance ranges of each node in the graph, for each environmental variable. For example, for Depthm the notebook will calculate each node's 25%, 50%, and 75% value of Depthm for which the node was found in. So if the node was found in 4 samples, with Depths of 20m, 30m, 40m, 50m, 60m, the 25% quantile would be 40m, 50% would be 40m, and 75% would be 50m. Each environmental variable's tolerance ranges will be saved to a separate sheet inside **data/tolerance_ranges/OTU_metavar_tolerance_ranges.xlsx**
+
+## 06_Metavariable_Attack_Natural_Network_Connectivity.ipynb
+
+- This notebook contains code to attack the network based on different environmental variable tolerance ranges. For example, for the environmental variable NCDepth, we will gradually remove nodes in order of the most sensitive (those nodes found in the lowest ranges of NCDepth, i.e. with the lowest interquartile range, 75% - 25%). Then, we will measure the [natural network connectivity](https://www.researchgate.net/publication/230944853_Natural_Connectivity_of_Complex_Networks) of the co-occurrence network, a robustness measure that captures the connectedness of the network, being more sensitive to nodes that are better-connected and less sensitive to nodes that are more sparsely connected. We will then plot the environmental variable attacks on the network together, to show how possible climate change events, and the resulting changes in nutrient concentrations, would affect the marine ecosystems off the California coast.
